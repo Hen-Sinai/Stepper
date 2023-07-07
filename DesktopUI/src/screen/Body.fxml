@@ -1,0 +1,24 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+
+<!--<?import javafx.scene.control.Tab?>-->
+<!--<?import javafx.scene.control.TabPane?>-->
+
+<!--<TabPane fx:id="tabPane" disable="true" nodeOrientation="LEFT_TO_RIGHT" stylesheets="@Body.css" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="screen.BodyController">-->
+<!--  <tabs>-->
+<!--      <Tab fx:id="flowsDefinitionTab" closable="false" text="Flows Definition">-->
+<!--          <fx:include fx:id="flowsDefinitionComponent" source="flowsDefinition/FlowsDefinition.fxml"/>-->
+<!--      </Tab>-->
+<!--      <Tab fx:id="flowsExecutionTab" closable="false" text="Flows Execution">-->
+<!--          <fx:include fx:id="flowsExecutionComponent" source="../../../Client/src/screen/flowsExecution/FlowsExecution.fxml"/>-->
+<!--      </Tab>-->
+<!--      <Tab fx:id="executionsHistoryTab" closable="false" text="Executions History">-->
+<!--          <fx:include fx:id="executionHistoryComponent" source="executionHistory/ExecutionHistory.fxml"/>-->
+<!--      </Tab>-->
+<!--      <Tab fx:id="statisticsTab" closable="false" text="Statistics">-->
+<!--          <fx:include fx:id="statisticsComponent" source="statistics/Statistics.fxml"/>-->
+<!--      </Tab>-->
+<!--      <Tab fx:id="settingsTab" closable="false" text="Settings">-->
+<!--          <fx:include fx:id="settingsComponent" source="settings/Settings.fxml"/>-->
+<!--      </Tab>-->
+<!--  </tabs>-->
+<!--</TabPane>-->

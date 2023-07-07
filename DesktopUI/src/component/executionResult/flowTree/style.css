@@ -1,0 +1,8 @@
+.spinner .progress-indicator {
+    -fx-animation: spinner-rotate 1s infinite linear;
+}
+
+@keyframes spinner-rotate {
+    from { -fx-rotate: 0; }
+    to { -fx-rotate: 360; }
+}

@@ -1,0 +1,9 @@
+.DescriptionTextArea {
+    -fx-opacity: 1.0; /* Set opacity to make the TextArea look normal */
+    -fx-background-color: white; /* Set background color to white */
+    -fx-text-fill: black; /* Set text color to black */
+    -fx-border-width: 0; /* Remove the border */
+    -fx-control-inner-background: transparent; /* Set the inner background to transparent */
+    -fx-background-insets: 0; /* Set the background insets to 0 */
+    -fx-padding: 0; /* Set the padding to 0 */
+}

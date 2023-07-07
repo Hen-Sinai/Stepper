@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<ScrollPane fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="component.flowDetails.stepData.StepDataController">
+   <content>
+      <GridPane fx:id="stepData" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="175.0" prefWidth="382.0" stylesheets="@../../availableFlows/flowMinimalDescription/FlowMinimalDescription.css">
+         <columnConstraints>
+            <ColumnConstraints hgrow="NEVER" maxWidth="145.33334350585938" minWidth="10.0" prefWidth="11.66668701171875" />
+            <ColumnConstraints halignment="LEFT" hgrow="NEVER" maxWidth="180.0" minWidth="75.66668701171875" prefWidth="81.66668701171875" />
+            <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" maxWidth="112.33331298828125" minWidth="0.0" prefWidth="10.3333740234375" />
+            <ColumnConstraints halignment="LEFT" hgrow="NEVER" maxWidth="433.3333435058594" minWidth="193.33331298828125" prefWidth="294.6666259765625" />
+            <ColumnConstraints hgrow="NEVER" maxWidth="117.33331298828125" minWidth="10.0" prefWidth="11.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints maxHeight="32.66667175292969" minHeight="3.666656494140625" prefHeight="15.666656494140625" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="84.66665649414062" prefHeight="42.66668701171875" vgrow="ALWAYS" />
+            <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+            <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+            <RowConstraints maxHeight="1.7976931348623157E308" minHeight="2.0" prefHeight="2.0" valignment="CENTER" vgrow="ALWAYS" />
+         </rowConstraints>
+         <children>
+            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="141.0" text="Name:" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </Label>
+            <Label fx:id="nameLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Time Spender" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </Label>
+            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Inputs:" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </Label>
+            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Outputs:" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </Label>
+            <TextArea fx:id="outputsTextArea" editable="false" prefHeight="200.0" prefWidth="200.0" text="sdsda" wrapText="true" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS" />
+            <TextArea fx:id="InputsTextArea" editable="false" layoutX="192.0" layoutY="166.0" prefHeight="200.0" prefWidth="200.0" text="sadsadsadsadsadsadsadsad sadsadsadsadsadsad sadsadsadsadsadsadsadsadsadsad sadsadsadsadsadsadsadsad" wrapText="true" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS" />
+         </children>
+      </GridPane>
+   </content>
+</ScrollPane>

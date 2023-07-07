@@ -1,0 +1,15 @@
+.label {
+    -fx-font-family: "Verdana";
+    -fx-padding: 5px;
+}
+
+.stepper {
+    -fx-alignment: center;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.stepper {
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+}

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.*?>
+<VBox minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="component.executionResult.passive.flowTree.FlowTreePassiveController">
+   <children>
+      <TreeView fx:id="flowTreeView" VBox.vgrow="ALWAYS" />
+   </children>
+</VBox>

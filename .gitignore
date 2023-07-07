@@ -1,0 +1,13 @@
+# Compiled class files
+*.class
+
+# Package files
+*.jar
+*.war
+*.ear
+
+# IntelliJ IDEA specific files
+.idea/
+
+# Exclude the 'out' directory
+out/

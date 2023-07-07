@@ -1,0 +1,18 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+
+<!--<?import javafx.geometry.Insets?>-->
+<!--<?import javafx.scene.control.TreeView?>-->
+<!--<?import javafx.scene.layout.StackPane?>-->
+<!--<?import javafx.scene.layout.VBox?>-->
+
+
+<!--<VBox minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="component.executionResult.flowTree.FlowTreeController">-->
+<!--   <children>-->
+<!--      <StackPane fx:id="spinnerContainer" maxHeight="40.0" prefHeight="40.0" VBox.vgrow="ALWAYS">-->
+<!--         <VBox.margin>-->
+<!--            <Insets />-->
+<!--         </VBox.margin>-->
+<!--      </StackPane>-->
+<!--      <TreeView fx:id="flowTreeView" stylesheets="@style.css" VBox.vgrow="ALWAYS" />-->
+<!--   </children>-->
+<!--</VBox>-->

@@ -1,0 +1,29 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+
+<!--<?import javafx.geometry.Insets?>-->
+<!--<?import javafx.scene.control.ComboBox?>-->
+<!--<?import javafx.scene.control.TableColumn?>-->
+<!--<?import javafx.scene.control.TableView?>-->
+<!--<?import javafx.scene.layout.VBox?>-->
+
+<!--<VBox fx:id="infoVBox" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="component.historyExecutionResult.HistoryExecutionResultController">-->
+<!--  <children>-->
+<!--      <ComboBox fx:id="filterComboBox" VBox.vgrow="ALWAYS">-->
+<!--         <VBox.margin>-->
+<!--            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />-->
+<!--         </VBox.margin>-->
+<!--         <padding>-->
+<!--            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />-->
+<!--         </padding>-->
+<!--      </ComboBox>-->
+<!--    <TableView fx:id="historyExecutionResultsTableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">-->
+<!--      <columns>-->
+<!--        <TableColumn fx:id="parameterColumn" editable="false" maxWidth="-1.0" minWidth="-1.0" prefWidth="-1.0" text="Parameter" />-->
+<!--        <TableColumn fx:id="dataColumn" maxWidth="-1.0" minWidth="-1.0" prefWidth="-1.0" text="Data" />-->
+<!--      </columns>-->
+<!--      <columnResizePolicy>-->
+<!--        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />-->
+<!--      </columnResizePolicy>-->
+<!--    </TableView>-->
+<!--  </children>-->
+<!--</VBox>-->

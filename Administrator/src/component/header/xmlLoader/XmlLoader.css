@@ -1,0 +1,8 @@
+.button {
+    -fx-font-size: 14px;
+}
+
+.label {
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
+}
