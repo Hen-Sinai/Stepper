@@ -5,7 +5,6 @@ import step.api.DataNecessity;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 //dot -Tpng name.dot -o output.png
@@ -121,11 +120,11 @@ public class GraphVizGenerator {
                 String inputName = input.getName().replace(" ", "_");
                 if (input.getNecessity() != DataNecessity.OPTIONAL) {
                     sb.append("  ").append(inputName).append(" [shape=none, label=\"").append(inputName).append("\", fontcolor=blue];\n");
-                    sb.append("  ").append(inputName).append(" -> ").append(dest.replace(" ", "_")).append(" [label=<<FONT COLOR=\"blue\">").append(input.getName()).append("</FONT><BR/><FONT COLOR=\"green\">").append(input.getType()).append("</FONT>>, style=dashed, color=blue];\n");
+                    sb.append("  ").append(inputName).append(" -> ").append(dest.replace(" ", "_")).append(" [label=<<FONT COLOR=\"blue\">").append(input.getName()).append("</FONT><BR/><FONT COLOR=\"green\">").append(input.getTypeName()).append("</FONT>>, style=dashed, color=blue];\n");
                 } else {
-                    String additionalText = input.getType();
+                    String additionalText = input.getTypeName();
                     sb.append("  ").append(inputName).append(" [shape=none, label=<<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\"><TR><TD ALIGN=\"center\"><FONT COLOR=\"green\">").append(additionalText).append("</FONT></TD></TR><TR><TD ALIGN=\"center\"><FONT COLOR=\"blue\">").append(inputName).append("</FONT></TD></TR></TABLE>>];\n");
-                    sb.append("  ").append(inputName).append(" -> ").append(dest.replace(" ", "_")).append(" [label=<<FONT COLOR=\"red\">").append(input.getName()).append("</FONT><BR/><FONT COLOR=\"green\">").append(input.getType()).append("</FONT>>, style=dashed, color=blue];\n");
+                    sb.append("  ").append(inputName).append(" -> ").append(dest.replace(" ", "_")).append(" [label=<<FONT COLOR=\"red\">").append(input.getName()).append("</FONT><BR/><FONT COLOR=\"green\">").append(input.getTypeName()).append("</FONT>>, style=dashed, color=blue];\n");
                 }
             }
         }

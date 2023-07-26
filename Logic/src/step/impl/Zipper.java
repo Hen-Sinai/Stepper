@@ -71,7 +71,7 @@ public class Zipper extends AbstractStepDefinition {
         stepInfo.setFinishTimeStamp();
         context.addStepInfo(stepInfo);
         context.dropStep();
-        return result;
+        return stepInfo.getStepResult();
     }
 
     private static boolean isZipFile(Path path) {

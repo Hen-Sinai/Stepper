@@ -11,4 +11,6 @@ public class DoubleDataDefinition extends AbstractDataDefinition {
     public String getUserPresentation() {
         return "Decimal number";
     }
+
+
 }

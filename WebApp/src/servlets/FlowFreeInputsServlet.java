@@ -33,19 +33,15 @@ public class FlowFreeInputsServlet extends HttpServlet {
         String flowId;
         String flowName = req.getParameter("flowName");
 
-        if (type.equals("continuation")) {
+        if (type != null && type.equals("continuation")) {
             flowId = req.getParameter("flowId");
             inputs = engineManager.continueToNextFlow(UUID.fromString(flowId), flowName);
 
         }
-        else if (type.equals("rerun")) {
+        else if (type != null && type.equals("rerun")) {
             flowId = req.getParameter("flowId");
             inputs = engineManager.reRunFlow(UUID.fromString(flowId), flowName);
         }
-//        else if (parentController.getContinuation().getReRunButtonPressed().getValue()) {
-//            inputs = engineManager.reRunFlow(UUID.fromString(parentController.getExecutedFlowID().getValue()),
-//                    parentController.getCurrentFlowNameProperty().getValue());
-//        }
         else
             inputs = engineManager.getFreeInputs(flowName);
 

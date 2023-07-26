@@ -34,9 +34,12 @@ public class TextFieldController implements InputField {
     public void init(CollectFlowInputsController parentController, FreeInputDTO input) {
         this.input = input;
         this.fieldLabel.setText(input.getName() + " (" + input.getNecessity().toString() + ")");
-        this.inputTextField.setText(input.getData() != null ? input.getData().toString() : "");
+        if (input.getUserString().equals("Integer"))
+            this.inputTextField.setText(input.getData() != null ? String.valueOf((int)((Double) input.getData()).doubleValue()) : "");
+        else
+            this.inputTextField.setText(input.getData() != null ? input.getData().toString() : "");
 
-        if (input.getType().equals("Number")) {
+        if (input.getTypeName().equals("Number")) {
             // Create a TextFormatter with a regular expression pattern allowing only digits
             TextFormatter<String> textFormatter = new TextFormatter<>(change -> {
                 String newText = change.getControlNewText();

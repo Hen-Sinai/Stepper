@@ -92,6 +92,6 @@ public class FilesDeleter extends AbstractStepDefinition {
         stepInfo.setFinishTimeStamp();
         context.addStepInfo(stepInfo);
         context.dropStep();
-        return result;
+        return stepInfo.getStepResult();
     }
 }

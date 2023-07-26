@@ -36,6 +36,10 @@ public class LoginController {
             errorMessageProperty.set("User name is empty. You can't login with empty user name");
             return;
         }
+        else if (userName.equals("Admin")) {
+            errorMessageProperty.set("Invalid username");
+            return;
+        }
 
         String finalUrl = HttpUrl
                 .parse(Constants.LOGIN)
@@ -69,13 +73,14 @@ public class LoginController {
     }
     public void changeSceneToMainApp() {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("/main/App.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main/App.fxml"));
             ScrollPane scrollPane = fxmlLoader.load();
             AppController appController = fxmlLoader.getController();
             appController.setPrimaryStage(primaryStage);
             primaryStage.getScene().setRoot(scrollPane);
-        } catch (IOException ignore) {}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setPrimaryStage(Stage primaryStage) {

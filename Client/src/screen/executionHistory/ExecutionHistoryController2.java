@@ -10,7 +10,6 @@ import screen.BodyController;
 
 public class ExecutionHistoryController2 {
     private BodyController parentController;
-    //    @FXML private GridPane historyGridPane;
     @FXML private FlowTreePassiveController flowTreePassiveComponentController;
     @FXML private Button reRunFlowButton;
     @FXML private HistoryExecutionResultController historyExecutionResultComponentController;

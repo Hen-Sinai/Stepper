@@ -33,6 +33,8 @@ public class ExecuteFlowServlet extends HttpServlet {
         try {
             flowId = engineManager.executeFlow(executeDataDTO, username).getId().toString();
         } catch (MyInputMismatchException e) {
+            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            res.getWriter().write(e.getMessage());
         }
 
         res.setStatus(HttpServletResponse.SC_OK);

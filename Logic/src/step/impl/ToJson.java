@@ -2,6 +2,9 @@ package step.impl;
 
 import Exceptions.NoMatchTypeException;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import dd.impl.DataDefinitionRegistry;
 import flow.execution.context.StepExecutionContext;
 import flow.stepInfo.StepInfo;
@@ -27,13 +30,16 @@ public class ToJson extends AbstractStepDefinition {
         Instant start = Instant.now();
         stepInfo.setStartTimeStamp();
         StepResult result = null;
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         try {
             String content = context.getDataValue(IO.CONTENT.getName(), String.class);
-            String contentJson = gson.toJson(content);
+            gson.fromJson(content, Object.class);
+
             stepInfo.addLog("Content is JSON string. Converting to json...");
-            context.storeDataValue(IO.JSON.getName(), contentJson);
+            context.storeDataValue(IO.JSON.getName(), gson.fromJson(content, JsonElement.class));
+//            stepInfo.addLog("Content is JSON string. Converting to json...");
+//            context.storeDataValue(IO.JSON.getName(), gson.fromJson(content, JsonElement.class));
         } catch (Exception e) {
             stepInfo.addLog("Content is not a valid JSON representation");
             stepInfo.setSummaryLine("Content is not a valid JSON representation");
@@ -46,6 +52,6 @@ public class ToJson extends AbstractStepDefinition {
         stepInfo.setFinishTimeStamp();
         context.addStepInfo(stepInfo);
         context.dropStep();
-        return result;
+        return stepInfo.getStepResult();
     }
 }

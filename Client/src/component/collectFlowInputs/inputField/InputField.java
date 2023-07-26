@@ -13,5 +13,5 @@ public interface InputField {
     String getName();
     DataNecessity getNecessity();
     SimpleBooleanProperty getIsInputFieldEmptyProperty();
-    String getInputData();
+    Object getInputData();
 }

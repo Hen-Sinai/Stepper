@@ -66,4 +66,23 @@ public class RoleServlet extends HttpServlet {
 
         res.setStatus(HttpServletResponse.SC_OK);
     }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        EngineManager engineManager = EngineManagerImpl.getInstance();
+
+        String username = SessionUtils.getUsername(req);
+        if (username == null || !username.equals(engineManager.getAdminName())) {
+            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        String roleName = req.getParameter("roleName");
+        if (engineManager.deleteRoleIfPossible(roleName)) {
+            res.setStatus(HttpServletResponse.SC_OK);
+        }
+        else {
+            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
+    }
 }

@@ -31,6 +31,7 @@ import util.http.HttpClientUtil;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class ExecutedFlowDataPassiveController {
@@ -134,7 +135,7 @@ public class ExecutedFlowDataPassiveController {
                 addMapViewToItems(item, mapView, vbox);
             }
             else if (item.getType().equals("Relation")) {
-                RelationPresentation tablePresentation = new RelationPresentation((RelationData) item.getData());
+                RelationPresentation tablePresentation = new RelationPresentation((LinkedHashMap<String, String>) item.getData());
                 addRelationViewToItems(item, tablePresentation, vbox);
             }
             else {
@@ -196,7 +197,7 @@ public class ExecutedFlowDataPassiveController {
                 addMapViewToItems(output, mapView, vbox);
             }
             else if (output.getType().equals("Relation")) {
-                RelationPresentation tablePresentation = new RelationPresentation((RelationData) output.getData());
+                RelationPresentation tablePresentation = new RelationPresentation((LinkedHashMap<String, String>) output.getData());
                 addRelationViewViewToItems(output, tablePresentation, vbox);
             }
             else {

@@ -24,68 +24,55 @@ import util.http.HttpClientUtil;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Timer;
 
 public class HistoryExecutionResultController {
     @FXML private TableView<HistoryFlowsData> historyExecutionResultsTableView;
     @FXML private ComboBox<String> filterComboBox;
+    private final SimpleStringProperty filterProperty = new SimpleStringProperty();
     private final SimpleStringProperty chosenFlowIdProperty = new SimpleStringProperty();
     private final SimpleStringProperty chosenFlowNameProperty = new SimpleStringProperty();
 
     public void init(ExecutionHistoryController parentController) {
         filterComboBox.getItems().addAll("All", FlowExecutionResult.SUCCESS.toString()
                 , FlowExecutionResult.WARNING.toString(), FlowExecutionResult.FAILURE.toString());
+        this.initTableView();
         filterComboBox.setValue("All");
-
-        parentController.getParentController().getIsExecutionsHistoryVisible()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (newValue) {
-                        showFlowData();
-                    }
-                });
-
         filterComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
-            showFlowData();
+            filterProperty.setValue(newValue);
         });
+        filterProperty.setValue(filterComboBox.getValue());
+        startListRefresher();
     }
 
-    private void showFlowData() {
-        String finalUrl = HttpUrl
-                .parse(Constants.HISTORY_EXECUTIONS)
-                .newBuilder()
-                .addQueryParameter("filter", filterComboBox.getValue())
-                .build()
-                .toString();
-
-        HttpClientUtil.runAsync(finalUrl, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) {
-                if (response.isSuccessful()) {
-                    List<FlowExecutedInfoDTO> executionsInfo = new Gson().fromJson(response.body().charStream(),
-                            new TypeToken<List<FlowExecutedInfoDTO>>(){}.getType());
-                    Platform.runLater(() -> {
-                        createTableView(executionsInfo);
-                    });
-                }
-            }
-        });
-
-
+    public void startListRefresher() {
+        HistoryExecutionResultRefresher historyExecutionResultRefresher = new HistoryExecutionResultRefresher(
+                this::createTableView, filterProperty);
+        Timer timer = new Timer();
+        timer.schedule(historyExecutionResultRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
     }
 
     private void createTableView(List<FlowExecutedInfoDTO> executionsInfo) {
-        historyExecutionResultsTableView.getItems().clear();
         ObservableList<HistoryFlowsData> items = FXCollections.observableArrayList();
         for (FlowExecutedInfoDTO executedInfo : executionsInfo) {
             if (executedInfo.getResult() != null) {
-                items.add(new HistoryFlowsData(executedInfo.getId(), executedInfo.getName(), executedInfo.getTimeStamp(), executedInfo.getResult().toString()));
+                items.add(new HistoryFlowsData(executedInfo.getId(), executedInfo.getName(), executedInfo.getTimeStamp(),
+                        executedInfo.getResult().toString(), executedInfo.getRanByUser(), executedInfo.isRanByManager()));
             }
         }
-        historyExecutionResultsTableView.setItems(items);
 
+        // Add the columns to the table view
+        historyExecutionResultsTableView.getItems().addAll(items);
+
+        // Add action to TableView rows
+        historyExecutionResultsTableView.setOnMouseClicked(event -> {
+            HistoryFlowsData selectedFlow = historyExecutionResultsTableView.getSelectionModel().getSelectedItem();
+            chosenFlowNameProperty.set(selectedFlow.getName());
+            chosenFlowIdProperty.set(selectedFlow.getId().toString());
+        });
+    }
+
+    private void initTableView() {
         TableColumn<HistoryFlowsData, String> nameColumn = new TableColumn<>("Name");
         nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
 
@@ -95,15 +82,14 @@ public class HistoryExecutionResultController {
         TableColumn<HistoryFlowsData, String> resultColumn = new TableColumn<>("Result");
         resultColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getResult()));
 
-        // Add the columns to the table view
-        historyExecutionResultsTableView.getColumns().setAll(nameColumn, timeColumn, resultColumn);
+        TableColumn<HistoryFlowsData, String> usernameColumn = new TableColumn<>("Username");
+        usernameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUsername()));
 
-        // Add action to TableView rows
-        historyExecutionResultsTableView.setOnMouseClicked(event -> {
-            HistoryFlowsData selectedFlow = historyExecutionResultsTableView.getSelectionModel().getSelectedItem();
-            chosenFlowNameProperty.set(selectedFlow.getName());
-            chosenFlowIdProperty.set(selectedFlow.getId().toString());
-        });
+        TableColumn<HistoryFlowsData, String> managerColumn = new TableColumn<>("Is Manager");
+        managerColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIsRanByManager()));
+
+        // Add the columns to the table view
+        historyExecutionResultsTableView.getColumns().setAll(nameColumn, timeColumn, resultColumn, usernameColumn, managerColumn);
     }
 
     public SimpleStringProperty getChosenFlowIdProperty() {

@@ -5,6 +5,7 @@ import DTO.UserDTO;
 import com.google.gson.Gson;
 import component.roles.rolesInfo.flowsList.FlowsListController;
 import dataStructures.TableViewData;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
@@ -25,15 +26,24 @@ public class RolesInfoController {
     @FXML private TableView<TableViewData> rolesInfoTableView;
     @FXML private TableColumn<TableViewData, String> parameterColumn;
     @FXML private TableColumn<TableViewData, Object> dataColumn;
+    @FXML private Button saveButton;
+    @FXML private Button deleteButton;
+    @FXML private Label actionMessageLabel;
     private RoleDTO role;
+    private String currentChosenRole;
     private FlowsListController flowsListController;
 
     public void init(RolesManagementController parentController) {
         this.parentController = parentController;
+        this.saveButton.setDisable(true);
+        this.deleteButton.setDisable(true);
         parentController.getRolesListComponentController().getChosenRole()
                 .addListener((observable, oldValue, newValue) -> {
-                    if (oldValue == null || !oldValue.equals(newValue)) {
-                        getRole();
+                    if (oldValue == null) {
+                        getRole(newValue);
+                        currentChosenRole = newValue;
+                        this.saveButton.setDisable(false);
+                        this.deleteButton.setDisable(false);
                     }
                 });
     }
@@ -82,11 +92,11 @@ public class RolesInfoController {
         return this.parentController;
     }
 
-    private void getRole() {
+    private void getRole(String roleName) {
         String finalUrl = HttpUrl
                 .parse(Constants.ROLE)
                 .newBuilder()
-                .addQueryParameter("roleName", this.parentController.getRolesListComponentController().getChosenRole().getValue())
+                .addQueryParameter("roleName", roleName)
                 .build()
                 .toString();
 
@@ -131,6 +141,45 @@ public class RolesInfoController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) {
+                if (response.isSuccessful()) {
+                    Platform.runLater(() -> {
+                        actionMessageLabel.setText("Role saved successfully");
+                    });
+                }
+            }
+        });
+    }
+
+    public void onClickDelete(ActionEvent actionEvent) {
+        String finalUrl = HttpUrl
+                .parse(Constants.ROLE)
+                .newBuilder()
+                .addQueryParameter("roleName", currentChosenRole)
+                .build()
+                .toString();
+
+        HttpClientUtil.runAsyncDelete(finalUrl, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
+                if (response.isSuccessful()) {
+                    Platform.runLater(() -> {
+                        actionMessageLabel.visibleProperty().set(true);
+                        actionMessageLabel.setText("Role deleted successfully");
+                        parentController.getRolesListComponentController().getRolesListView().getItems().remove(
+                                parentController.getRolesListComponentController().getChosenRole().getValue()
+                        );
+                        rolesInfoTableView.getItems().clear();
+                    });
+                } else {
+                    Platform.runLater(() -> {
+                        actionMessageLabel.visibleProperty().set(true);
+                        actionMessageLabel.setText("Role in use, can't be deleted");
+                    });
+                }
             }
         });
     }

@@ -50,6 +50,8 @@ public class BodyController {
         settingsComponentController.init(this);
 
         setTabsListener();
+
+        this.tabPane.setDisable(true);
     }
 
     @FXML
@@ -63,6 +65,10 @@ public class BodyController {
 
     public void setMainController(AppController mainController) {
         this.parentController = mainController;
+    }
+
+    public TabPane getTabPane() {
+        return this.tabPane;
     }
 
     private void setTabsListener() {

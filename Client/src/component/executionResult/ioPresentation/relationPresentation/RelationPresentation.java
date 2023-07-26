@@ -1,5 +1,6 @@
 package component.executionResult.ioPresentation.relationPresentation;
 
+import dataStructures.HistoryFlowsData;
 import dd.impl.relation.RelationData;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
@@ -8,14 +9,21 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.LinkedHashMap;
 
 public class RelationPresentation extends VBox {
     private final TableView<Map<String, String>> tableView;
 
-    public RelationPresentation(RelationData data) {
-        tableView = createTableView(data);
-        tableView.getItems().addAll(data.getRows());
+    public RelationPresentation(LinkedHashMap data) {
+        List<String> columns = (List<String>)(data.get("columns"));
+        List<Map<String, String>> rows = (List<Map<String, String>>)(data.get("rows"));
+        RelationData RelationData = new RelationData(columns, rows);
+
+        tableView = createTableView(RelationData);
+        tableView.getItems().addAll(RelationData.getRows());
 
         VBox.setVgrow(tableView, Priority.ALWAYS);
 
@@ -43,9 +51,5 @@ public class RelationPresentation extends VBox {
         tableView.maxHeightProperty().bind(tableView.fixedCellSizeProperty().multiply(data.getRows().size()));
 
         return tableView;
-    }
-
-    public TableView<Map<String, String>> getTableView() {
-        return this.tableView;
     }
 }

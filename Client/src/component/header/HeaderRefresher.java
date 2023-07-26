@@ -1,11 +1,9 @@
-package component.availableFlows;
+package component.header;
 
 import DTO.FlowsNameDTO;
+import DTO.UserDTO;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.HttpUrl;
@@ -15,24 +13,20 @@ import util.Constants;
 import util.http.HttpClientUtil;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Set;
 import java.util.TimerTask;
 import java.util.function.Consumer;
 
-import static util.Constants.GSON_INSTANCE;
+public class HeaderRefresher extends TimerTask {
+    private final Consumer<UserDTO> userConsumer;
 
-public class AvailableFlowsRefresher extends TimerTask {
-    private final Consumer<FlowsNameDTO> availableFlowsConsumer;
-
-    public AvailableFlowsRefresher(Consumer<FlowsNameDTO> availableFlowsConsumer) {
-        this.availableFlowsConsumer = availableFlowsConsumer;
+    public HeaderRefresher(Consumer<UserDTO> userConsumer) {
+        this.userConsumer = userConsumer;
     }
 
     @Override
     public void run() {
         String finalUrl = HttpUrl
-                .parse(Constants.AVAILABLE_FLOWS)
+                .parse(Constants.USER)
                 .newBuilder()
                 .build()
                 .toString();
@@ -46,8 +40,9 @@ public class AvailableFlowsRefresher extends TimerTask {
             public void onResponse(@NotNull Call call, @NotNull Response response) {
                 if (response.isSuccessful()) {
                     try {
-                        FlowsNameDTO names = new Gson().fromJson(response.body().string(), FlowsNameDTO.class);
-                        availableFlowsConsumer.accept(names);
+                        String responseData = response.body().string();
+                        UserDTO user = new Gson().fromJson(responseData, UserDTO.class);
+                        userConsumer.accept(user);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

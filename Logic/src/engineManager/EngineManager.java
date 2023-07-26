@@ -28,7 +28,7 @@ public interface EngineManager {
     List<FreeInputDTO> reRunFlow(UUID currentFlowID, String chosenFlow);
     ExecutionResultDTO executeFlow(ExecuteDataDTO executeDataDTO, String userName) throws MyInputMismatchException;
 //    ExecutionResultDTO getExecutionResult();
-    List<FlowExecutedInfoDTO> getFlowsExecutedInfoDTO(String filter, String userName);
+    List<FlowExecutedInfoDTO> getFlowsExecutedInfoDTO(String filter, String userName, int fromIndex);
     FlowExecutedDataDTO getFlowExecutedDataDTO(UUID flowId);
     Map<String,StatsDTO> getsStats();
     StatsDTO getStepsStats();
@@ -40,9 +40,11 @@ public interface EngineManager {
     Map<String, RoleDTO> getUserRoles(String username);
     void addRole(RoleDTO role);
     void updateRole(RoleDTO role);
+    boolean deleteRoleIfPossible(String roleName);
     String getAdminName();
     void setAdminName(String username);
-    boolean isUserExist(String username);
+    boolean isUserExists(String username);
+    void logout(String username);
     void addUser(String username, boolean isManager);
     Set<UserDTO> getUsers();
     UserDTO getUser(String username);

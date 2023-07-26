@@ -1,7 +1,10 @@
 package component.header;
 
 import component.header.xmlLoader.XmlLoaderController;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import main.AppController;
 
 public class HeaderController {
@@ -17,7 +20,7 @@ public class HeaderController {
         return this.parentController;
     }
 
-    public XmlLoaderController getXmlLoaderController () {
+    public XmlLoaderController getXmlLoaderController() {
         return this.xmlLoaderController;
     }
 }

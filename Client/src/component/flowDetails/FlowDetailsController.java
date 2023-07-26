@@ -64,10 +64,12 @@ public class FlowDetailsController {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) {
                 if (response.isSuccessful()) {
-                    FlowDTO flowData = new Gson().fromJson(response.body().charStream(), FlowDTO.class);
-                    Platform.runLater(() -> {
-                        createTableView(flowData);
-                    });
+                    try {
+                        FlowDTO flowData = new Gson().fromJson(response.body().string(), FlowDTO.class);
+                        Platform.runLater(() -> {
+                            createTableView(flowData);
+                        });
+                    } catch (IOException ignore) {}
                 }
             }
         });

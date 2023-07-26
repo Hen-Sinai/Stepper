@@ -5,6 +5,8 @@ import engineManager.EngineManager;
 import engineManager.EngineManagerImpl;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
@@ -65,10 +67,17 @@ public class AppController {
                     bodyComponentController.setMainController(AppController.this);
                     bodyComponentController.init();
                 }
+                else if (response.code() == 404) {
+
+                }
                 else {
                     Platform.runLater(() -> {
-                        elementsBorderPane.getChildren().clear();
-                        elementsBorderPane.getChildren().add(new Label("Admin already logged in"));
+                        Label label = new Label("Admin already logged in");
+                        label.setStyle("-fx-font-weight: bold; -fx-font-size: 60px;");
+                        BorderPane.setAlignment(label, Pos.CENTER);
+                        BorderPane.setMargin(label, new Insets(230, 0, 0, 0));
+                        elementsBorderPane.setCenter(null);
+                        elementsBorderPane.setTop(label);
                     });
                 }
             }
@@ -80,5 +89,9 @@ public class AppController {
     }
     public Stage getPrimaryStage() {
         return this.primaryStage;
+    }
+
+    public BodyController getBodyComponentController() {
+        return this.bodyComponentController;
     }
 }

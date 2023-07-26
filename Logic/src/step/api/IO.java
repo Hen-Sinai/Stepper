@@ -21,7 +21,6 @@ public enum IO implements Serializable {
         add("Collect Files In Folder");
         add("Files Deleter");
         add("Files Content Extractor");
-        add("To Json");
     }}),
     TOTAL_FOUND("TOTAL_FOUND", DataDefinitionRegistry.NUMBER, new HashSet<String>() {{
         add("Collect Files In Folder");
@@ -60,6 +59,7 @@ public enum IO implements Serializable {
     }}),
     CONTENT("CONTENT", DataDefinitionRegistry.STRING, new HashSet<String>() {{
         add("File Dumper");
+        add("To Json");
     }}),
     LINE("LINE", DataDefinitionRegistry.NUMBER, new HashSet<String>() {{
         add("Files Content Extractor");
@@ -82,10 +82,10 @@ public enum IO implements Serializable {
     ADDRESS("ADDRESS", DataDefinitionRegistry.STRING, new HashSet<String>() {{
         add("HTTP Call");
     }}),
-    PROTOCOL("PROTOCOL", DataDefinitionRegistry.PROTOCOL_ENUMERATOR, new HashSet<String>() {{
+    PROTOCOL("PROTOCOL", DataDefinitionRegistry.STRING, new HashSet<String>() {{
         add("HTTP Call");
     }}),
-    METHOD("METHOD", DataDefinitionRegistry.METHOD_ENUMERATOR, new HashSet<String>() {{
+    METHOD("METHOD", DataDefinitionRegistry.STRING, new HashSet<String>() {{
         add("HTTP Call");
     }}),
     BODY("BODY", DataDefinitionRegistry.JSON, new HashSet<String>() {{

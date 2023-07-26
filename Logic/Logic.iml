@@ -12,5 +12,6 @@
     <orderEntry type="module" module-name="Xml" />
     <orderEntry type="library" name="okHttp" level="project" />
     <orderEntry type="library" name="gson-2.1" level="project" />
+    <orderEntry type="library" name="json_path" level="project" />
   </component>
 </module>

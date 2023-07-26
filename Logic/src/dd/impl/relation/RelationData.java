@@ -15,6 +15,11 @@ public class RelationData implements Serializable {
         this.rows = new ArrayList<>();
     }
 
+    public RelationData(List<String> columns, List<Map<String, String>> rows) {
+        this.columns = columns;
+        this.rows = rows;
+    }
+
     public List<String> getColumns() {
         return this.columns;
     }

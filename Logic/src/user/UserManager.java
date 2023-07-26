@@ -2,8 +2,6 @@ package user;
 
 import DTO.RoleDTO;
 import DTO.UserDTO;
-import roles.AllFlowsRole;
-import roles.ReadOnlyFlowsRole;
 import roles.Role;
 import roles.RoleImpl;
 
@@ -40,6 +38,10 @@ public class UserManager {
         return users.containsKey(username);
     }
 
+    public void logout(String username) {
+        users.remove(username);
+    }
+
     public synchronized void setAdminName(String name) {
         adminName = name;
     }
@@ -48,14 +50,16 @@ public class UserManager {
         return this.adminName;
     }
 
-    public void updateUser(UserDTO user) {
+    public void updateUser(UserDTO userDTO) {
+        User user = this.getUser(userDTO.getName());
         Map<String, Role> roles = new HashMap<>();
-        for (Map.Entry<String, RoleDTO> role : user.getRoles().entrySet()) {
+
+        user.getRoles().clear();
+        for (Map.Entry<String, RoleDTO> role : userDTO.getRoles().entrySet()) {
             roles.put(role.getKey(), new RoleImpl(role.getValue().getName(), role.getValue().getDescription(), role.getValue().getAllowedFlows()));
         }
 
-        User userToUpdate = this.getUser(user.getName());
-        userToUpdate.setIsManager(user.getIsManager());
-        userToUpdate.setRoles(roles);
+        user.setIsManager(userDTO.getIsManager());
+        user.setRoles(roles);
     }
 }

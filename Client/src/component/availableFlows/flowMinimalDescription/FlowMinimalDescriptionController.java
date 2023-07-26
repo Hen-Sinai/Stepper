@@ -27,14 +27,12 @@ import java.awt.*;
 import java.io.IOException;
 
 public class FlowMinimalDescriptionController {
-    private final EngineManager engineManager = EngineManagerImpl.getInstance();
     private AvailableFlowsController parentController;
     @FXML private Label nameLabel;
     @FXML private TextArea DescriptionTextArea;
     @FXML private Label AmountOfStepsLabel;
     @FXML private Label AmountOfInputsLabel;
     @FXML private Label AmountOfContinuationLabel;
-    @FXML private Button visualizeFlowButton;
 
     private final SimpleStringProperty name;
     private final SimpleStringProperty description;
@@ -84,10 +82,14 @@ public class FlowMinimalDescriptionController {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) {
                 if (response.isSuccessful()) {
-                    FlowDTO flow = new Gson().fromJson(response.body().charStream(), FlowDTO.class);
-                    Platform.runLater(() -> {
-                        setData(flow);
-                    });
+                    try {
+                        FlowDTO flow = new Gson().fromJson(response.body().string(), FlowDTO.class);
+                        Platform.runLater(() -> {
+                            setData(flow);
+                        });
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -100,33 +102,5 @@ public class FlowMinimalDescriptionController {
         this.amountOfSteps.set(flow.getStepsDTO().size());
         this.amountOfInputs.set(flow.getInputDTO().size());
         this.amountOfContinuation.set(flow.getContinuations().size());
-    }
-
-    @FXML
-    private void onClickVisualizeFlow() {
-        // Create a new JFrame
-        JFrame frame = new JFrame("Graph");
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-        // Create a JPanel to hold the image
-        JPanel panel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                // Load and draw the image
-                ImageIcon imageIcon = new ImageIcon(name.getValue() + ".png");
-                Image image = imageIcon.getImage();
-                g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
-            }
-        };
-
-        // Add the panel to the frame
-        frame.getContentPane().add(panel);
-
-        // Set the size of the frame
-        frame.setSize(1600, 1000);
-
-        // Display the frame
-        frame.setVisible(true);
     }
 }

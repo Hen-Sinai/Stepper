@@ -61,7 +61,7 @@ public class BodyController {
         executionHistoryComponentController.init(this);
         settingsComponentController.init(this);
 
-//        tabPane.setDisable(false);
+        tabPane.setDisable(true);
         setTabsListener();
     }
 
@@ -101,6 +101,10 @@ public class BodyController {
         return this.flowsExecutionTab;
     }
 
+    public TabPane getTabPane() {
+        return this.tabPane;
+    }
+
     private void setTabsListener() {
         tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
             // Start the fade transition when switching tabs
@@ -132,6 +136,13 @@ public class BodyController {
         });
 
         flowsDefinitionComponentController.getIsExecuteFlowButtonClicked().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                isFlowsExecutionEnabled.setValue(true);
+                isFlowsExecutionVisible.set(true);
+            }
+        });
+
+        executionHistoryComponentController.getIsReRunPressed().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 isFlowsExecutionEnabled.setValue(true);
                 isFlowsExecutionVisible.set(true);

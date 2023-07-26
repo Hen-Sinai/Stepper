@@ -18,6 +18,7 @@ public class Constants {
     public final static String CONTINUATIONS = FULL_SERVER_PATH + "/continuations";
     public final static String HISTORY_EXECUTIONS = FULL_SERVER_PATH + "/history_executions";
     public final static String LOGIN = FULL_SERVER_PATH + "/login";
+    public final static String USER = FULL_SERVER_PATH + "/user";
 
     // global constants
     public final static int REFRESH_RATE = 1000;

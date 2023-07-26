@@ -24,7 +24,6 @@ import java.util.TimerTask;
 import java.util.UUID;
 
 public class ExecuteFlowTask extends TimerTask {
-    private final EngineManager engineManager = EngineManagerImpl.getInstance();
     private final UIAdapter uiAdapter;
     private final UUID flowId;
     private final SimpleStringProperty currentFlowId;

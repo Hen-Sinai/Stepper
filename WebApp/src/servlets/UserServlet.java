@@ -25,11 +25,12 @@ public class UserServlet extends HttpServlet {
         EngineManager engineManager = EngineManagerImpl.getInstance();
 
         String username = SessionUtils.getUsername(req);
-        if (!username.equals("Admin")) {
+        if (username == null) {
             res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
-        username = req.getParameter("username");
+        if (username.equals("Admin"))
+            username = req.getParameter("username");
 
         UserDTO user = engineManager.getUser(username);
         String userStr = new Gson().toJson(user, UserDTO.class);
@@ -38,7 +39,7 @@ public class UserServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse res) throws IOException {
         EngineManager engineManager = EngineManagerImpl.getInstance();
 
         String username = SessionUtils.getUsername(req);

@@ -1,6 +1,8 @@
 package engineManager;
 
 import DTO.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import flow.definition.api.*;
 import flow.execution.StatsData;
 import Exceptions.*;
@@ -196,11 +198,13 @@ public class EngineManagerImpl implements EngineManager {
         for (Map.Entry<String, Map<DataDefinitionDeclaration, List<String>>> entry : flow.getFlowFreeInputs().entrySet()) {
             for (Map.Entry<DataDefinitionDeclaration, List<String>> input : entry.getValue().entrySet()) {
                 if (initialValues.containsKey(entry.getKey())) {
-                    inputs.add(new FreeInputDTO(entry.getKey(), input.getKey().getUserString(), input.getKey().getDataDefinition().getName(),
+                    inputs.add(new FreeInputDTO(input.getKey().getName(), entry.getKey(), input.getKey().getDataDefinition().getUserPresentation(), input.getKey().getDataDefinition().getName(),
+                            input.getKey().getDataDefinition().getType(),
                             input.getValue(), input.getKey().getNecessity(), true, initialValues.get(entry.getKey())));
                 }
                 else {
-                    inputs.add(new FreeInputDTO(entry.getKey(), input.getKey().getUserString(), input.getKey().getDataDefinition().getName(),
+                    inputs.add(new FreeInputDTO(input.getKey().getName(), entry.getKey(), input.getKey().getDataDefinition().getUserPresentation(), input.getKey().getDataDefinition().getName(),
+                            input.getKey().getDataDefinition().getType(),
                             input.getValue(), input.getKey().getNecessity(), false));
                 }
             }
@@ -233,7 +237,8 @@ public class EngineManagerImpl implements EngineManager {
 
         Map<String, Object> initialInputValues = this.flowsManager.getFlow(executeDataDTO.getFlowName()).getInitialInputValues();
         castInput(initialInputValues, executeDataDTO.getFlowName());
-        FlowExecution flowExecution = new FlowExecution(UUID.randomUUID(), username,
+        fillInputs(executeDataDTO);
+        FlowExecution flowExecution = new FlowExecution(UUID.randomUUID(), username, this.userManager.getUser(username).getIsManager(),
                 this.flowsManager.getFlow(executeDataDTO.getFlowName()), initialInputValues);
 
         executedFlowsList.add(flowExecution);
@@ -268,6 +273,12 @@ public class EngineManagerImpl implements EngineManager {
                 case "Double":
                     value = Double.parseDouble((String) value);
                     break;
+//                case "JSON":
+//                    value = new Gson().toJsonTree((String) value);
+//                    break;
+                case "JSON":
+                    value = new Gson().fromJson((String) value, JsonElement.class);
+                    break;
             }
         } catch (Exception e) {
             throw new MyInputMismatchException(name);
@@ -275,7 +286,13 @@ public class EngineManagerImpl implements EngineManager {
         return value;
     }
 
-
+    private void fillInputs(ExecuteDataDTO executeDataDTO) {
+        FlowDefinition flow = this.flowsManager.getFlows().get(executeDataDTO.getFlowName());
+        for (Map.Entry<String, Map<DataDefinitionDeclaration, List<String>>> entry : flow.getFlowFreeInputs().entrySet()) {
+            if (!executeDataDTO.getDataValues().containsKey(entry.getKey()))
+                executeDataDTO.getDataValues().put(entry.getKey(), null);
+        }
+    }
 
     private List<OutputDTO> getFormalOutputs(FlowExecution flowExecution) {
         Map<String, Map<DataDefinitionDeclaration, Object>> allOutputs = flowExecution.getOutputs2data();
@@ -306,21 +323,27 @@ public class EngineManagerImpl implements EngineManager {
     }
 
     @Override
-    public List<FlowExecutedInfoDTO> getFlowsExecutedInfoDTO(String filter, String username) {
+    public List<FlowExecutedInfoDTO> getFlowsExecutedInfoDTO(String filter, String username, int fromIndex) {
         List<FlowExecutedInfoDTO> ExecutionsInfo = new ArrayList<>();
-        Map<String, Role> roles = this.userManager.getUserRoles(username);
 
-        for (FlowExecution execution : this.executedFlowsList) {
-            for (Map.Entry<String, Role> entry : roles.entrySet()) {
-                if (entry.getValue().getAllowedFlows().contains(execution.getFlowDefinition().getName())) {
-                    if (filter.equals("All") || execution.getFlowExecutionResult().toString().equals(filter))
-                        ExecutionsInfo.add(new FlowExecutedInfoDTO(execution.getFlowDefinition().getName(), execution.getUniqueId(),
-                                execution.getStartTimeStamp(), execution.getFlowExecutionResult()));
-                }
+        if (username.equals("Admin") || this.userManager.getUser(username).getIsManager()) {
+            for (FlowExecution execution : this.executedFlowsList.subList(fromIndex, this.executedFlowsList.size())) {
+                if (execution.getFlowExecutionResult() != null && (filter.equals("All") || execution.getFlowExecutionResult().toString().equals(filter)))
+                    ExecutionsInfo.add(new FlowExecutedInfoDTO(execution.getFlowDefinition().getName(), execution.getUniqueId(),
+                            execution.getStartTimeStamp(), execution.getFlowExecutionResult(),
+                            execution.getRanByUser(), execution.isRanByManager()));
             }
-
         }
-        Collections.reverse(ExecutionsInfo);
+        else {
+            for (FlowExecution execution : this.executedFlowsList.subList(fromIndex, this.executedFlowsList.size())) {
+                if (execution.getFlowExecutionResult() != null &&
+                        (execution.getRanByUser().equals(username) && (filter.equals("All") || execution.getFlowExecutionResult().toString().equals(filter))))
+                    ExecutionsInfo.add(new FlowExecutedInfoDTO(execution.getFlowDefinition().getName(), execution.getUniqueId(),
+                            execution.getStartTimeStamp(), execution.getFlowExecutionResult(),
+                            execution.getRanByUser(), execution.isRanByManager()));
+            }
+        }
+
         return ExecutionsInfo;
     }
 
@@ -416,7 +439,8 @@ public class EngineManagerImpl implements EngineManager {
         for (Map.Entry<String, Map<DataDefinitionDeclaration, List<String>>> entry : flow.getFlowFreeInputs().entrySet()) {
             for (Map.Entry<DataDefinitionDeclaration, List<String>> input : entry.getValue().entrySet()) {
                 if (executedFlow.getInputs2data().get(entry.getKey()) != null)
-                    inputs.add(new FreeInputDTO(entry.getKey(), input.getKey().getDataDefinition().getName(),
+                    inputs.add(new FreeInputDTO(input.getKey().getName(), entry.getKey(), input.getKey().getDataDefinition().getName(),
+                            input.getKey().getDataDefinition().getType(),
                             executedFlow.getInputs2data().get(entry.getKey()).values().iterator().next(),
                             input.getKey().getNecessity(), false));
             }
@@ -564,7 +588,7 @@ public class EngineManagerImpl implements EngineManager {
             for (Map.Entry<DataDefinitionDeclaration, Object> dataEntry : stepEntry.getValue().entrySet()) {
                 dataName = dataEntry.getKey().getName();
                 for (FreeInputDTO input : inputs) {
-                    if (input.getName().equals(dataName))
+                    if (input.getName().equals(stepEntry.getKey()))
                         input.setData(dataEntry.getValue());
                 }
             }
@@ -618,6 +642,18 @@ public class EngineManagerImpl implements EngineManager {
     }
 
     @Override
+    public boolean deleteRoleIfPossible(String roleName) {
+        for (Map.Entry<String, User> userEntry : this.userManager.getUsers().entrySet()) {
+            for (Map.Entry<String, Role> rolesEntry : userEntry.getValue().getRoles().entrySet()) {
+                if (rolesEntry.getValue().getName().equals(roleName))
+                    return false;
+            }
+        }
+        this.roles.deleteRole(roleName);
+        return true;
+    }
+
+    @Override
     public String getAdminName() {
         return this.userManager.getAdminName();
     }
@@ -628,8 +664,13 @@ public class EngineManagerImpl implements EngineManager {
     }
 
     @Override
-    public boolean isUserExist(String username) {
+    public boolean isUserExists(String username) {
         return this.userManager.isUserExists(username);
+    }
+
+    @Override
+    public void logout(String username) {
+        this.userManager.logout(username);
     }
 
     @Override
@@ -650,7 +691,11 @@ public class EngineManagerImpl implements EngineManager {
     @Override
     public UserDTO getUser(String username) {
         User user = this.userManager.getUser(username);
-        return new UserDTO(user.getName(), user.getIsManager());
+        Map<String, RoleDTO> roles = new HashMap<>();
+        for (Map.Entry<String, Role> entry : user.getRoles().entrySet()) {
+            roles.put(entry.getKey(), new RoleDTO(entry.getKey(), entry.getValue().getDescription(), entry.getValue().getAllowedFlows()));
+        }
+        return new UserDTO(user.getName(), user.getIsManager(), roles);
     }
 
     @Override

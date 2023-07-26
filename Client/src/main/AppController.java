@@ -1,17 +1,14 @@
 package main;
 
-import component.header.HeaderController;
-import engineManager.EngineManager;
-import engineManager.EngineManagerImpl;
+import component.header.HeaderController2;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
 import screen.BodyController;
 
 public class AppController {
-    private final EngineManager engineManager = EngineManagerImpl.getInstance();
     private Stage primaryStage;
-    @FXML private HeaderController headerComponentController;
+    @FXML private HeaderController2 headerComponentController;
     @FXML private BodyController bodyComponentController;
     @FXML private ScrollPane scrollPane;
 
@@ -45,5 +42,9 @@ public class AppController {
     }
     public Stage getPrimaryStage() {
         return this.primaryStage;
+    }
+
+    public HeaderController2 getHeaderComponentController() {
+        return this.headerComponentController;
     }
 }

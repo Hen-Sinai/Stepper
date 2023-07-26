@@ -73,6 +73,6 @@ public class FileDumper extends AbstractStepDefinition {
         stepInfo.setFinishTimeStamp();
         context.addStepInfo(stepInfo);
         context.dropStep();
-        return result;
+        return stepInfo.getStepResult();
     }
 }

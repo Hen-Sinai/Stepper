@@ -1,10 +1,7 @@
 package component.collectFlowInputs;
 
 import DTO.ExecuteDataDTO;
-import DTO.ExecutionResultDTO;
-import DTO.FlowDTO;
 import DTO.FreeInputDTO;
-import Exceptions.MyInputMismatchException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import component.collectFlowInputs.inputField.InputField;
@@ -33,7 +30,6 @@ import java.io.IOException;
 import java.util.*;
 
 public class CollectFlowInputsController {
-    private final EngineManager engineManager = EngineManagerImpl.getInstance();
     private FlowsExecutionController parentController;
     @FXML private HBox inputsHBox;
     @FXML private Label errorLabel;
@@ -71,7 +67,7 @@ public class CollectFlowInputsController {
             finalUrl = HttpUrl
                     .parse(Constants.FLOW_FREE_INPUTS)
                     .newBuilder()
-                    .addQueryParameter("type", "continuation")
+                    .addQueryParameter("type", "rerun")
                     .addQueryParameter("flowId", parentController.getParentController().getExecutionHistoryController().
                             getHistoryExecutionResultComponentController().getChosenFlowIdProperty().getValue())
                     .addQueryParameter("flowName", parentController.getParentController().getExecutionHistoryController().
@@ -83,7 +79,6 @@ public class CollectFlowInputsController {
             finalUrl = HttpUrl
                     .parse(Constants.FLOW_FREE_INPUTS)
                     .newBuilder()
-                    .addQueryParameter("type", "")
                     .addQueryParameter("flowName", flowName.getValue())
                     .build()
                     .toString();
@@ -95,10 +90,13 @@ public class CollectFlowInputsController {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) {
                 if (response.isSuccessful()) {
-                    inputs = new Gson().fromJson(response.body().charStream(), new TypeToken<List<FreeInputDTO>>(){}.getType());
-                    Platform.runLater(() -> {
-                        setInput(inputs);
-                    });
+                    try {
+                        inputs = new Gson().fromJson(response.body().string(), new TypeToken<List<FreeInputDTO>>() {
+                        }.getType());
+                        Platform.runLater(() -> {
+                            setInput(inputs);
+                        });
+                    } catch (IOException ignore) {}
                 }
             }
         });
@@ -118,12 +116,14 @@ public class CollectFlowInputsController {
         try {
             FXMLLoader fxmlLoader;
             VBox inputField;
-
-            if (input.getType().equals("Zipper enumerator"))
+            String inputOriginalName = input.getOriginalName();
+            if (inputOriginalName.equals("OPERATION") || inputOriginalName.equals("PROTOCOL") || inputOriginalName.equals("METHOD"))
                 fxmlLoader = new FXMLLoader(getClass().getResource("/component/collectFlowInputs/choiceField/ChoiceField.fxml"));
+            else if (inputOriginalName.equals("FOLDER_NAME") || inputOriginalName.equals("FILE_NAME") ||
+                    inputOriginalName.equals("SOURCE"))
+                fxmlLoader = new FXMLLoader(getClass().getResource("/component/collectFlowInputs/routeField/RouteField.fxml"));
             else
                 fxmlLoader = new FXMLLoader(getClass().getResource("/component/collectFlowInputs/textField/TextField.fxml"));
-
 
             inputField = fxmlLoader.load();
             InputField controller = fxmlLoader.getController();
@@ -200,13 +200,25 @@ public class CollectFlowInputsController {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) {
                 try {
-                    String flowId = response.body().string();
-                    Platform.runLater(() -> {
-                        parentController.setExecutedFlowID(UUID.fromString(flowId));
-                        startButtonClickProperty.set(true);
-                        errorLabel.visibleProperty().set(false);
-                        button.setDisable(true);
-                    });
+                    if (response.isSuccessful()) {
+                        String flowId = response.body().string();
+                        Platform.runLater(() -> {
+                            parentController.setExecutedFlowID(UUID.fromString(flowId));
+                            startButtonClickProperty.set(true);
+                            errorLabel.visibleProperty().set(false);
+                            button.setDisable(true);
+                        });
+                    }
+                    else if (response.code() == 400) {
+                        Platform.runLater(() -> {
+                            try {
+                                errorLabel.setText(response.body().string());
+                                errorLabel.visibleProperty().set(true);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        });
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -221,7 +233,7 @@ public class CollectFlowInputsController {
         for (VBox input : vBoxList) {
             controller = (InputField) input.getProperties().get("controller");
             String labelValue = controller.getName();
-            String value = controller.getInputData();
+            Object value = controller.getInputData();
             dataValues.put(labelValue, value.equals("") ? null : value);
         }
         for (FreeInputDTO input : inputs) {

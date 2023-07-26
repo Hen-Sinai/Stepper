@@ -16,6 +16,9 @@ public enum StepDefinitionRegistry implements Serializable {
     FILE_DUMPER(new FileDumper()),
     ZIPPER(new Zipper()),
     COMMAND_LINE(new CommandLine()),
+    HTTP_CALL(new HttpCall()),
+    TO_JSON(new ToJson()),
+    JSON_DATA_EXTRACTOR(new JsonDataExtractor()),
     ;
 
     private final String name;

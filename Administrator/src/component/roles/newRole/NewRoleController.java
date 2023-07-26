@@ -1,5 +1,6 @@
 package component.roles.newRole;
 
+import DTO.FlowsNameDTO;
 import DTO.RoleDTO;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -21,16 +22,19 @@ import util.http.HttpClientUtil;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 public class NewRoleController {
     private RolesManagementController parentController;
     @FXML private TextField nameTextField;
     @FXML private TextField descriptionTextField;
     @FXML private ListView<String> flowsListView;
-    private Map<String, RoleDTO> allRoles = new HashMap<>();
-    private final Map<String, RoleDTO> userRoles = new HashMap<>();
+    private FlowsNameDTO allFlows;
+    private final Set<String> userRoles = new HashSet<>();
 
     public void init(RolesManagementController parentController) {
         this.parentController = parentController;
@@ -57,7 +61,7 @@ public class NewRoleController {
                     setText(item);
                     setFont(javafx.scene.text.Font.font("Arial", 12)); // Set the font style
 
-                    if (userRoles.containsKey(item)) {
+                    if (userRoles.contains(item)) {
                         // Role is present in userRoles, color it green
                         setTextFill(Color.GREEN);
                     } else {
@@ -69,8 +73,8 @@ public class NewRoleController {
         });
 
         // Add allRoles to the ListView
-        for (Map.Entry<String, RoleDTO> entry : allRoles.entrySet()) {
-            flowsListView.getItems().add(entry.getKey());
+        for (String flow : allFlows.getFlowsNames()) {
+            flowsListView.getItems().add(flow);
         }
     }
 
@@ -78,10 +82,10 @@ public class NewRoleController {
         String selectedRole = flowsListView.getSelectionModel().getSelectedItem();
 
         // Iterate through the selected roles and update their colors
-        if (userRoles.containsKey(selectedRole))
+        if (userRoles.contains(selectedRole))
             userRoles.remove(selectedRole);
         else
-            userRoles.put(selectedRole, allRoles.get(selectedRole));
+            userRoles.add(selectedRole);
 
         flowsListView.setCellFactory(param -> new ListCell<String>() {
             @Override
@@ -94,7 +98,7 @@ public class NewRoleController {
                 } else {
                     setText(item);
                     setFont(javafx.scene.text.Font.font("Arial", 12));
-                    if (userRoles.containsKey(item)) {
+                    if (userRoles.contains(item)) {
                         setTextFill(Color.GREEN);
                     }
                     else {
@@ -110,7 +114,7 @@ public class NewRoleController {
         CompletableFuture<Void> future = new CompletableFuture<>();
 
         String finalUrl = HttpUrl
-                .parse(Constants.ROLES)
+                .parse(Constants.ALL_FLOWS)
                 .newBuilder()
                 .build()
                 .toString();
@@ -126,7 +130,7 @@ public class NewRoleController {
                 if (response.isSuccessful()) {
                     try {
                         String responseData = response.body().string();
-                        allRoles = new Gson().fromJson(responseData, new TypeToken<Map<String, RoleDTO>>(){}.getType());
+                        allFlows = new Gson().fromJson(responseData, FlowsNameDTO.class);
                         future.complete(null);
                     } catch (IOException ignore) {
                         future.complete(null);
@@ -145,7 +149,7 @@ public class NewRoleController {
         RoleDTO newRole = new RoleDTO(
                 this.nameTextField.getText(),
                 this.descriptionTextField.getText(),
-                allRoles.keySet()
+                new HashSet<>(allFlows.getFlowsNames())
                 );
 
         String finalUrl = HttpUrl

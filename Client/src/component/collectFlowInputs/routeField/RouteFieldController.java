@@ -1,81 +1,43 @@
 package component.collectFlowInputs.routeField;
 
 import DTO.FreeInputDTO;
-import Exceptions.*;
 import component.collectFlowInputs.CollectFlowInputsController;
 import component.collectFlowInputs.inputField.InputField;
-import engineManager.EngineManager;
-import engineManager.EngineManagerImpl;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import step.api.DataNecessity;
 
-import javax.xml.bind.JAXBException;
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
-import java.io.IOException;
 
 public class RouteFieldController implements InputField {
     @FXML private Label fieldLabel;
-    @FXML private VBox routeInputComponent;
-    @FXML private RadioButton folderRadioButton;
-    @FXML private RadioButton fileRadioButton;
-    @FXML private Button chooseButton;
     @FXML private TextField routeTextField;
-    private final EngineManager engineManager = EngineManagerImpl.getInstance();
     private CollectFlowInputsController parentController;
     private FreeInputDTO input;
-    private final SimpleStringProperty radioButtonChoseProperty;
-    private final SimpleBooleanProperty isTextFieldEmptyProperty;
-
-    public RouteFieldController() {
-        radioButtonChoseProperty = new SimpleStringProperty();
-        isTextFieldEmptyProperty = new SimpleBooleanProperty(true);
-    }
-
-    @FXML
-    public void initialize() {
-        chooseButton.disableProperty().bind(radioButtonChoseProperty.isEmpty());
-
-        ToggleGroup toggleGroup = new ToggleGroup();
-        folderRadioButton.setToggleGroup(toggleGroup);
-        fileRadioButton.setToggleGroup(toggleGroup);
-    }
-
-    @FXML
-    private void handleRadioButtonAction() {
-        if (folderRadioButton.isSelected()) {
-            radioButtonChoseProperty.set(folderRadioButton.getText());
-        } else if (fileRadioButton.isSelected()) {
-            radioButtonChoseProperty.set(fileRadioButton.getText());
-        }
-    }
+    private final SimpleBooleanProperty isTextFieldEmptyProperty = new SimpleBooleanProperty(true);
+    private File selectedFile;
 
     @FXML
     private void handleChooseButtonAction() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Select xml file");
-        if (radioButtonChoseProperty.getValue().equals("Folder"))
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("All files", "*"));
-        else
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("All files", "*.*"));
-        File selectedFile = fileChooser.showOpenDialog(this.parentController.getParentController().getParentController().getParentController().getPrimaryStage());
-        if (selectedFile == null) {
-            return;
+        JFileChooser fileChooser = new JFileChooser();
+        this.routeTextField.setText(input.getData() != null ? input.getData().toString() : "");
+        FileNameExtensionFilter allFilesFilter = new FileNameExtensionFilter("All Files", "*.*");
+        fileChooser.setFileFilter(allFilesFilter);
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        int ret = fileChooser.showOpenDialog(null);
+
+        if (ret == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+
+            if (selectedFile != null) {
+                isTextFieldEmptyProperty.set(false);
+                routeTextField.setText(selectedFile.getPath());
+            }
         }
-//        try {
-////            engineManager.loadXmlFile(selectedFile.getAbsolutePath());
-//            this.routeTextField.setText(selectedFile.getAbsolutePath());
-//        } catch (JAXBException | StepNotExist | OutputNameNotUnique | FlowNameExist | NoXmlFormat | IOException |
-//                 StepNameNotUnique | UserInputNotFriendly | DataNotExistCustomMapping | CustomDataNotmatch |
-//                 ReferenceToForwardStep | DataNotExistFlowLevelAliasing | FlowOutputNotExist |
-//                 UserInputTypeCollision | InitialInputValueNotExist | FlowNotExist | DataNotExistContinuation |
-//                 InitialInputValueTypeNotMatch e) {
-//            e.printStackTrace();
-//        }
     }
 
     @Override
@@ -83,14 +45,15 @@ public class RouteFieldController implements InputField {
         this.parentController = parentController;
         this.input = input;
         this.fieldLabel.setText(input.getName() + " (" + input.getNecessity().toString() + ")");
-
+        this.routeTextField.setEditable(false);
+        this.routeTextField.setText(input.getData() != null ? input.getData().toString() : "");
     }
     @Override
     public Label getFieldLabel() {
         return this.fieldLabel;
     }
     @Override
-    public String getInputData() {
+    public Object getInputData() {
         return this.routeTextField.getText();
     }
     @Override

@@ -25,7 +25,7 @@ public class LoginServlet extends HttpServlet {
             } else {
                 usernameFromParameter = usernameFromParameter.trim();
                 synchronized (this) {
-                    if (engineManager.isUserExist(usernameFromParameter)) {
+                    if (engineManager.isUserExists(usernameFromParameter)) {
                         String errorMessage = "Username " + usernameFromParameter + " already exists. Please enter a different username.";
                         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                         response.getOutputStream().print(errorMessage);
@@ -42,5 +42,19 @@ public class LoginServlet extends HttpServlet {
         } else {
             response.setStatus(HttpServletResponse.SC_OK);
         }
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        EngineManager engineManager = EngineManagerImpl.getInstance();
+
+        String username = SessionUtils.getUsername(req);
+        if (username == null) {
+            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        engineManager.logout(username);
+        res.setStatus(HttpServletResponse.SC_OK);
     }
 }

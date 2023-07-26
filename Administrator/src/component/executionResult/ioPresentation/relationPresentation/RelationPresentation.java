@@ -8,14 +8,20 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class RelationPresentation extends VBox {
     private final TableView<Map<String, String>> tableView;
 
-    public RelationPresentation(RelationData data) {
-        tableView = createTableView(data);
-        tableView.getItems().addAll(data.getRows());
+    public RelationPresentation(LinkedHashMap data) {
+        List<String> columns = (List<String>)(data.get("columns"));
+        List<Map<String, String>> rows = (List<Map<String, String>>)(data.get("rows"));
+        RelationData RelationData = new RelationData(columns, rows);
+
+        tableView = createTableView(RelationData);
+        tableView.getItems().addAll(RelationData.getRows());
 
         VBox.setVgrow(tableView, Priority.ALWAYS);
 

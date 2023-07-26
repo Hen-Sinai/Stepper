@@ -4,6 +4,7 @@ import DTO.FlowExecutedInfoDTO;
 import DTO.UserDTO;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import component.historyExecutionResult.HistoryExecutionResultRefresher;
 import component.users.userInfo.UserInfoController;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -22,6 +23,7 @@ import util.http.HttpClientUtil;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+import java.util.Timer;
 import java.util.stream.Collectors;
 
 public class ExecutedFlowsListController {
@@ -30,6 +32,13 @@ public class ExecutedFlowsListController {
 
     public void init(UserInfoController userInfoController) {
         initFlows(userInfoController.getParentController().getUsersListComponentController().getChosenUser().getValue());
+        startListRefresher();
+    }
+
+    public void startListRefresher() {
+        ExecutedFlowsListRefresher executedFlowsListRefresher = new ExecutedFlowsListRefresher(this::createListView);
+        Timer timer = new Timer();
+        timer.schedule(executedFlowsListRefresher, Constants.REFRESH_RATE, Constants.REFRESH_RATE);
     }
 
     private void initFlows(String username) {

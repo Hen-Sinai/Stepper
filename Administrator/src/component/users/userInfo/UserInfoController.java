@@ -37,17 +37,20 @@ public class UserInfoController {
     @FXML private TableView<TableViewData> userInfoTableView;
     @FXML private TableColumn<TableViewData, String> parameterColumn;
     @FXML private TableColumn<TableViewData, Object> dataColumn;
+    @FXML private Button saveButton;
     private final CheckBox managerCheckBox = new CheckBox();
     private RolesListController rolesListController;
     private PossibleFlowsListController possibleFlowsListController;
 
     public void init(UsersManagementController parentController) {
         this.parentController = parentController;
+        this.saveButton.setDisable(true);
         parentController.getUsersListComponentController().getChosenUser()
                 .addListener((observable, oldValue, newValue) -> {
                     if (oldValue == null || !oldValue.equals(newValue)) {
                         getUser();
                         createTableView();
+                        this.saveButton.setDisable(false);
                     }
                 });
     }
@@ -152,7 +155,7 @@ public class UserInfoController {
 
         String userJson = new Gson().toJson(user);
         RequestBody body = RequestBody.create(userJson.getBytes());
-        HttpClientUtil.runAsyncPost(finalUrl, body, new Callback() {
+        HttpClientUtil.runAsyncPut(finalUrl, body, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
             }

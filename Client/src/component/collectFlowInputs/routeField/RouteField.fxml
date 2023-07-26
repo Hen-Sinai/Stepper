@@ -3,26 +3,15 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox fx:id="routeInputComponent" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="component.collectFlowInputs.routeField.RouteFieldController">
    <children>
-      <Label fx:id="fieldLabel" />
+      <Label fx:id="fieldLabel" text="Select File" />
       <HBox>
          <children>
-            <VBox HBox.hgrow="ALWAYS">
-               <children>
-                  <RadioButton fx:id="folderRadioButton" mnemonicParsing="false" onAction="#handleRadioButtonAction" text="Folder">
-                     <padding>
-                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                     </padding>
-                  </RadioButton>
-                  <RadioButton fx:id="fileRadioButton" mnemonicParsing="false" onAction="#handleRadioButtonAction" text="File" VBox.vgrow="ALWAYS" />
-               </children>
-            </VBox>
             <Button fx:id="chooseButton" mnemonicParsing="false" onAction="#handleChooseButtonAction" text="Choose" HBox.hgrow="ALWAYS" />
             <TextField fx:id="routeTextField" editable="false" HBox.hgrow="ALWAYS" />
          </children>

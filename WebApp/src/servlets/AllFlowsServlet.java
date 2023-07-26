@@ -1,7 +1,6 @@
 package servlets;
 
-import DTO.FlowExecutedDataDTO;
-import DTO.FlowExecutedInfoDTO;
+import DTO.FlowsNameDTO;
 import com.google.gson.Gson;
 import engineManager.EngineManager;
 import engineManager.EngineManagerImpl;
@@ -12,29 +11,26 @@ import jakarta.servlet.http.HttpServletResponse;
 import utils.SessionUtils;
 
 import java.io.IOException;
-import java.util.List;
 
-@WebServlet(name = "HistoryExecutionsServlet", urlPatterns = "/history_executions")
-public class HistoryExecutionsServlet extends HttpServlet {
+@WebServlet(name = "AllFlowsServlet", urlPatterns = "/all_flows")
+public class AllFlowsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        res.setContentType("application/json");
         EngineManager engineManager = EngineManagerImpl.getInstance();
         Gson gson = new Gson();
+        FlowsNameDTO names;
 
         String username = SessionUtils.getUsername(req);
-        if (username == null) {
+        if (username == null || !username.equals(engineManager.getAdminName())) {
             res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
-        String filter = req.getParameter("filter");
-        int fromIndex = Integer.parseInt(req.getParameter("fromIndex"));
-        if (filter == null)
-            filter = "All";
-        List<FlowExecutedInfoDTO> executionsInfo = engineManager.getFlowsExecutedInfoDTO(filter, username, fromIndex);
+        names = engineManager.getFlowsNames(username);
 
-        String executedDataJson = gson.toJson(executionsInfo);
+        String namesJson = gson.toJson(names);
         res.setStatus(HttpServletResponse.SC_OK);
-        res.getWriter().write(executedDataJson);
+        res.getWriter().write(namesJson);
     }
 }

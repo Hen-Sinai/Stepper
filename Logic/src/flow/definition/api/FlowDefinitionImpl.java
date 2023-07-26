@@ -214,8 +214,7 @@ public class FlowDefinitionImpl implements FlowDefinition {
                             }});
                             foundInputs.put(inputAlias, finalInputDefinition1.getDataDefinition().getName());
                         }
-                    }
-                    else {
+                    } else {
                         DataDefinitionDeclaration finalInputDefinition = inputDefinition;
                         this.userInputs.put(inputAlias, new HashMap<DataDefinitionDeclaration, List<String>>() {{
                             put(finalInputDefinition, new ArrayList<String>() {{
@@ -224,12 +223,10 @@ public class FlowDefinitionImpl implements FlowDefinition {
                         }});
                         foundInputs.put(inputAlias, finalInputDefinition.getDataDefinition().getName());
                     }
-                }
-                else {
+                } else {
                     if (this.connectedInputs.containsKey(step.getFinalStepName())) { // If the step is in, insert input name and his source
                         this.connectedInputs.get(step.getFinalStepName()).put(inputAlias, foundOutputs.get(inputAlias));
-                    }
-                    else {
+                    } else {
                         String finalInputAlias = inputAlias;
                         this.connectedInputs.put(step.getFinalStepName(), new HashMap<String, String>() {{
                             put(finalInputAlias, foundOutputs.get(finalInputAlias));
@@ -239,8 +236,7 @@ public class FlowDefinitionImpl implements FlowDefinition {
                     String inputName = this.step2inputAlias.get(step.getFinalStepName()).get(entry.getKey());
                     if (this.connectedOutputs.containsKey(foundOutputs.get(inputAlias))) {
                         this.connectedOutputs.get(foundOutputs.get(inputAlias)).get(inputAlias).put(step.getFinalStepName(), inputName);
-                    }
-                    else {
+                    } else {
                         String finalInputAlias1 = inputAlias;
                         this.connectedOutputs.put(foundOutputs.get(inputAlias), new HashMap<String, Map<String, String>>() {{
                             put(finalInputAlias1, new HashMap<String, String>() {{
@@ -268,11 +264,21 @@ public class FlowDefinitionImpl implements FlowDefinition {
         this.step2outputAlias = deepCopy(this.step2outputMapping);
 
         // custom mapping
+        boolean found;
         validateRefToStepBefore();
         validateCustomMappingDataConnection();
         for (stCustomMapping mapping : this.customMapping) {
-            if (!this.initialInputValues.containsKey(mapping.getTargetData()))
-                this.step2inputMapping.get(mapping.getTargetStep()).put(mapping.getTargetData(), mapping.getSourceData());
+            if (!this.initialInputValues.containsKey(mapping.getTargetData())) {
+                found = false;
+                for (Map.Entry<String, String> entry : step2inputMapping.get(mapping.getTargetStep()).entrySet()) {
+                    if (entry.getValue().equals(mapping.getTargetData())) {
+                        this.step2inputMapping.get(mapping.getTargetStep()).put(entry.getKey(), mapping.getSourceData());
+                        found = true;
+                    }
+                }
+                if (!found)
+                    this.step2inputMapping.get(mapping.getTargetStep()).put(mapping.getTargetData(), mapping.getSourceData());
+            }
         }
 
         this.extractUserInputs();

@@ -1,6 +1,8 @@
 package component.header.xmlLoader;
 
+import DTO.RoleDTO;
 import Exceptions.*;
+import com.google.gson.Gson;
 import component.header.HeaderController;
 import engineManager.EngineManager;
 import engineManager.EngineManagerImpl;
@@ -22,7 +24,6 @@ import java.io.File;
 import java.io.IOException;
 
 public class XmlLoaderController {
-    private final EngineManager engineManager = EngineManagerImpl.getInstance();;
     private HeaderController parentController;
     @FXML private Button loadXml;
     @FXML private Label pathLabel;
@@ -82,19 +83,29 @@ public class XmlLoaderController {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Platform.runLater(() -> {
                     errorLabel.setText(e.getMessage());
-                    isFileSelected.set(false);
-                    chosenPath.set("");
                 });
                 e.printStackTrace();
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) {
-                Platform.runLater(() -> {
-                    errorLabel.setText("");
-                    isFileSelected.set(true);
-                    chosenPath.set(selectedFile.getAbsolutePath());
-                });
+                if (response.isSuccessful()) {
+                    Platform.runLater(() -> {
+                        errorLabel.setText("");
+                        isFileSelected.set(true);
+                        chosenPath.set(selectedFile.getAbsolutePath());
+                        if (parentController.getParentController().getBodyComponentController().getTabPane().isDisabled())
+                            parentController.getParentController().getBodyComponentController().getTabPane().setDisable(false);
+                    });
+                }
+                else {
+                    try {
+                        String responseData = response.body().string();
+                        Platform.runLater(() -> {
+                            errorLabel.setText(responseData);
+                        });
+                    } catch (IOException ignore) {}
+                }
             }
         });
     }

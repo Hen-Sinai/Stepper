@@ -18,6 +18,7 @@ public class Constants {
     public final static String USERS = FULL_SERVER_PATH + "/users";
     public final static String USER = FULL_SERVER_PATH + "/user";
     public final static String AVAILABLE_FLOWS = FULL_SERVER_PATH + "/available_flows";
+    public final static String ALL_FLOWS = FULL_SERVER_PATH + "/all_flows";
     public final static String EXECUTED_FLOWS = FULL_SERVER_PATH + "/executed_flows";
     public final static String ADMIN_LOGIN = FULL_SERVER_PATH + "/admin_login";
 

@@ -33,7 +33,8 @@ public class FileUploadServlet extends HttpServlet {
         EngineManager engineManager = EngineManagerImpl.getInstance();
 
         if (!part.getSubmittedFileName().endsWith(".xml")) {
-            res.sendError(HttpServletResponse.SC_BAD_REQUEST, "File type must be xml");
+            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            res.getWriter().write("File type must be xml");
         }
 
         try {
@@ -46,7 +47,8 @@ public class FileUploadServlet extends HttpServlet {
                  ReferenceToForwardStep | DataNotExistFlowLevelAliasing | FlowOutputNotExist |
                  UserInputTypeCollision | InitialInputValueNotExist | FlowNotExist | DataNotExistContinuation |
                  InitialInputValueTypeNotMatch e) {
-            res.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            res.getWriter().write(e.getMessage());
         }
     }
 }

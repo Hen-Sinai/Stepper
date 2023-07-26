@@ -16,15 +16,25 @@ public class ChoiceFieldController implements InputField {
     @FXML private ChoiceBox<String> choiceBox;
     @FXML private Label fieldLabel;
     private FreeInputDTO input;
-    private final List<String> choices;
-    private final SimpleBooleanProperty isChoiceBoxEmptyProperty;
+    private final List<String> choices =  new ArrayList<>();
+    private final SimpleBooleanProperty isChoiceBoxEmptyProperty = new SimpleBooleanProperty(true);
 
-    public ChoiceFieldController() {
-        this.choices = new ArrayList<String>() {{
-            add("ZIP");
-            add("UNZIP");
-        }};
-        isChoiceBoxEmptyProperty = new SimpleBooleanProperty(true);
+    private void insertOptions(String type) {
+        if (type.equals("Zipper enumerator")) {
+            this.choices.add("ZIP");
+            this.choices.add("UNZIP");
+        }
+        else if (type.equals("Protocol enumerator")) {
+            this.choices.add("http");
+            this.choices.add("https");
+        }
+        else {
+            this.choiceBox.setValue("GET");
+            this.choices.add("GET");
+            this.choices.add("PUT");
+            this.choices.add("POST");
+            this.choices.add("DELETE");
+        }
     }
 
     @FXML
@@ -36,6 +46,7 @@ public class ChoiceFieldController implements InputField {
 
     @Override
     public void init(CollectFlowInputsController parentController, FreeInputDTO input) {
+        this.insertOptions(input.getTypeName());
         this.choiceBox.getItems().addAll(choices);
 
         this.input = input;

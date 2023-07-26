@@ -34,6 +34,7 @@ import util.http.HttpClientUtil;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -138,7 +139,7 @@ public class ExecutedFlowDataController {
                 addMapViewToItems(item, mapView, vbox);
             }
             else if (item.getType().equals("Relation")) {
-                RelationPresentation tablePresentation = new RelationPresentation((RelationData) item.getData());
+                RelationPresentation tablePresentation = new RelationPresentation((LinkedHashMap) item.getData());
                 addRelationViewToItems(item, tablePresentation, vbox);
             }
             else {
@@ -200,7 +201,7 @@ public class ExecutedFlowDataController {
                 addMapViewToItems(output, mapView, vbox);
             }
             else if (output.getType().equals("Relation")) {
-                RelationPresentation tablePresentation = new RelationPresentation((RelationData) output.getData());
+                RelationPresentation tablePresentation = new RelationPresentation((LinkedHashMap) output.getData());
                 addRelationViewViewToItems(output, tablePresentation, vbox);
             }
             else {

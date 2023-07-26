@@ -11,8 +11,8 @@ public class RolesManager {
 
     public RolesManager() {
         this.name2Role = new HashMap<String, Role>() {{
-            put("Read Only Flows",new AllFlowsRole());
-            put("All Flows",new ReadOnlyFlowsRole());
+            put("Read Only Flows",new ReadOnlyFlowsRole());
+            put("All Flows",new AllFlowsRole());
         }};
         this.rolesNames = new HashSet<String>() {{
             add("Read Only Flows");
@@ -26,9 +26,13 @@ public class RolesManager {
     }
 
     public void updateRole(Role role) {
-        this.name2Role.remove(role.getName());
-        this.rolesNames.remove(role.getName());
+        deleteRole(role.getName());
         addRole(role);
+    }
+
+    public void deleteRole(String roleName) {
+        this.name2Role.remove(roleName);
+        this.rolesNames.remove(roleName);
     }
 
     public Role getRole(String roleName) {

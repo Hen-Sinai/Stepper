@@ -71,9 +71,16 @@ public class AvailableFlowsController {
                 for (String flowName : newFlowNames) {
                     if (!currentNames.contains(flowName) && !removedFlowNames.contains(flowName)) {
                         currentNames.add(flowName);
-                        Platform.runLater(() -> createTitledPaneWithFXML(flowName));
+                        Platform.runLater(() ->  {
+                            createTitledPaneWithFXML(flowName);
+                        });
                     }
                 }
+
+                if (availableFlowsAccordion.getPanes().size() == 0)
+                    this.parentController.getParentComponent().getTabPane().setDisable(true);
+                else
+                    this.parentController.getParentComponent().getTabPane().setDisable(false);
             });
         }
     }

@@ -14,6 +14,7 @@ public class FlowExecution implements Serializable {
     private final static SimpleDateFormat sdfDate = new SimpleDateFormat("HH:mm:ss");
     private final UUID uniqueId;
     private final String ranByUser;
+    private final boolean isRanByManager;
     private final FlowDefinition flowDefinition;
     private Duration totalTime;
     private FlowExecutionResult flowExecutionResult;
@@ -26,9 +27,10 @@ public class FlowExecution implements Serializable {
     private final Map<String, Map<DataDefinitionDeclaration, Object>> output2data;
     private final List<StepUsageDeclaration> executedSteps = new ArrayList<>();
 
-    public FlowExecution(UUID uniqueId, String ranByUser, FlowDefinition flowDefinition, Map<String, Object> initialInputs) {
+    public FlowExecution(UUID uniqueId, String ranByUser, boolean isRanByManager, FlowDefinition flowDefinition, Map<String, Object> initialInputs) {
         this.uniqueId = uniqueId;
         this.ranByUser = ranByUser;
+        this.isRanByManager = isRanByManager;
         this.flowDefinition = flowDefinition;
         this.initialInputs = initialInputs;
         this.startTimeStamp = sdfDate.format(new Date());
@@ -40,6 +42,13 @@ public class FlowExecution implements Serializable {
 
     public UUID getUniqueId() {
         return this.uniqueId;
+    }
+    public String getRanByUser() {
+        return this.ranByUser;
+    }
+
+    public boolean isRanByManager() {
+        return this.isRanByManager;
     }
 
     public FlowDefinition getFlowDefinition() {
